@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id      Int       @id @default(autoincrement())
+  created DateTime  @default(now())
+  name    String?   @db.VarChar(255)
+  email   String    @unique @db.VarChar(255)
+  image   String?   @db.VarChar(255)
+  Course  Course[]
+  Article Article[]
+}
+
+model CountryBriefings {
+  id            Int    @id @default(autoincrement())
+  countryName   String @db.VarChar(255)
+  briefingTitle String @db.VarChar(255)
+  description   String @db.VarChar(255)
+  videoURL      String @db.VarChar(255)
+  // socialProfile String
+}
+
+model Article {
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  published       Boolean? @default(false)
+  title           String   @db.VarChar(255)
+  content         String
+  authorId        Int
+  author          User     @relation(fields: [authorId], references: [id])
+  publicationDate DateTime
+  countryName     String
+  category        String
+}
+
+model Initiative {
+  id                 Int     @id @default(autoincrement())
+  title              String  @db.VarChar(255)
+  vision             String  @db.VarChar(255)
+  mission            String  @db.VarChar(255)
+  contactInformation String  @db.VarChar(255)
+  registrationURL    String  @db.VarChar(255)
+  socialMediaLinks   String  @db.VarChar(255)
+  teamId             Int
+  team               Team    @relation(fields: [teamId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  events             Event[]
+}
+
+model Team {
+  id          Int          @id @default(autoincrement())
+  name        String
+  imageURL    String
+  position    String
+  linkedInURL String
+  initiatives Initiative[]
+}
+
+model Event {
+  id          Int          @id @default(autoincrement())
+  imgSrc      String       @db.VarChar(255)
+  title       String       @db.VarChar(255)
+  date        String       @db.VarChar(255)
+  location    String       @db.VarChar(255)
+  description String       @db.VarChar(255)
+  category    String       @db.VarChar(255)
+  price       String       @db.VarChar(255)
+  preDiscount String       @db.VarChar(255)
+  initiatives Initiative[]
+}
+
+model Course {
+  id              Int    @id @default(autoincrement())
+  imageSrc        String @db.VarChar(255)
+  authorId        Int
+  author          User   @relation(fields: [authorId], references: [id])
+  title           String @db.VarChar(255)
+  rating          String @db.VarChar(255)
+  ratingCount     String @db.VarChar(255)
+  lessonCount     String @db.VarChar(255)
+  duration        String @db.VarChar(255)
+  level           String @db.VarChar(255)
+  category        String @db.VarChar(255)
+  state           String @db.VarChar(255)
+  language        String @db.VarChar(255)
+  viewStatus      String @db.VarChar(255)
+  difficulty      String @db.VarChar(255)
+  requirementText String
+  description     String
+}
